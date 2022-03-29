@@ -1,0 +1,30 @@
+---
+- name: Install docker on cluster hosts
+  hosts: cluster
+  gather_facts: no
+  roles:
+    - role: docker_init
+
+- name: Prepare host to deploy k8s cluster
+  hosts: cluster
+  gather_facts: no
+  roles:
+    - role: k8s_prepare_host
+
+- name: Init k8s cluster by runing master node
+  hosts: masters[0]
+  gather_facts: no
+  roles:
+    - role: k8s_init_cluster
+
+- name: Join master nodes to cluster
+  hosts: masters
+  gather_facts: no
+  roles: 
+    - role: k8s_join_masters
+
+- name: Join worker nodes to cluster
+  hosts: workers
+  gather_facts: no
+  roles: 
+    - role: k8s_join_workers

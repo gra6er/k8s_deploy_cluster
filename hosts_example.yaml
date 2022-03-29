@@ -1,0 +1,68 @@
+all:
+  children:
+    masters:
+      hosts:
+        192.168.1.3: # this host (masters[0]) will be first master, that initiates cluster
+        192.168.1.5: # other hosts is a masters to join to cluster
+        192.168.1.7:
+
+    workers: 
+      hosts:
+        192.168.1.4:
+        192.168.1.6:
+        192.168.1.8:
+    
+    cluster:
+      children:
+        masters:
+        workers: 
+
+  vars:
+    ansible_user: <sudo user>
+    ansible_password: <sudo user's password>
+    ansible_become: yes
+    ansible_become_password: <sudo user's password>
+
+  # Docker init settings
+  # --------------------
+
+  # DNF packages to prepare host  
+    dnf_packages:
+      - dnf-utils
+      - python3-pip
+      - docker-ce
+
+  # PIP packages to prepare host
+    pip_packages:
+      - docker-py
+      - kubernetes
+  
+  # Deploy custom /etc/docker/daemon.json or not. If yes put it to files folder
+  # Kubernetes required custom daemon.json file, so should be "yes"
+    daemon_json_deploy: yes
+
+
+  # k8s preparing host settings
+  # ---------------------------
+
+  # Reboot host after playbook comleted or not
+    reboot_after_done: yes
+
+
+  # k8s init cluster settings
+  # ---------------------------
+
+  # Network settings
+    # Pods network 
+    pod_network_cidr: 172.16.0.0/16
+
+    # Endpoint of control plane (master IP (DNS) or proxy)
+    control_plane_endpoint: 192.168.1.3
+
+
+  # k8s join masters settings
+  # ---------------------------
+
+
+  # k8s join workers settings
+  # ---------------------------
